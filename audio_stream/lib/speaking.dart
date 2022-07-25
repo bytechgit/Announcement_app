@@ -3,30 +3,30 @@ import 'package:dropdown_search/dropdown_search.dart';
 
 import 'PlayButton.dart';
 
-class speaking extends StatefulWidget {
-  const speaking({Key? key}) : super(key: key);
+class Speaking extends StatefulWidget {
+  const Speaking({Key? key}) : super(key: key);
 
   @override
-  State<speaking> createState() => _speakingState();
+  State<Speaking> createState() => _SpeakingState();
 }
 
-List Rooms = ['Room 1', 'Room 2', 'Room 3', 'Room 4'];
+List rooms = ['Room 1', 'Room 2', 'Room 3', 'Room 4'];
 
-class _speakingState extends State<speaking> {
+class _SpeakingState extends State<Speaking> {
+  //final TextEditingController _controller = TextEditingController();
   @override
-  final TextEditingController _controller = TextEditingController();
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            backgroundColor: Color.fromRGBO(255, 255, 255, 0.95),
+            backgroundColor: const Color.fromRGBO(255, 255, 255, 0.95),
             bottomNavigationBar: BottomNavigationBar(
               backgroundColor: Colors.white,
               unselectedItemColor: Colors.grey,
-              selectedItemColor: Color.fromARGB(255, 2, 83, 154),
+              selectedItemColor: const Color.fromARGB(255, 2, 83, 154),
               type: BottomNavigationBarType.fixed,
               showSelectedLabels: false,
               showUnselectedLabels: false,
-              items: <BottomNavigationBarItem>[
+              items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(
                     Icons.mic,
@@ -62,7 +62,7 @@ class _speakingState extends State<speaking> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      items: Rooms,
+                      items: rooms,
                       showSearchBox: true,
                     ),
                   ),
@@ -70,21 +70,17 @@ class _speakingState extends State<speaking> {
                 Expanded(child: Container()),
                 Center(
                   child: SizedBox(
-                    height: 200,
-                    width: 200,
-                    child: PlayButton(
-                      pauseIcon: Icon(Icons.mic_rounded,
-                          color: Color.fromARGB(255, 2, 83, 154), size: 90),
-                      playIcon: Icon(Icons.mic_off_rounded,
-                          color: Color.fromARGB(255, 2, 83, 154), size: 90),
-                      onPressed: () {},
-                    ),
-                    // Blob(
-                    //   color: Color(0xff0092ff), // color blue
-                    //   scale: 1,
-                    //   rotation: 0,
-                    // ),
-                  ),
+                      height: 200,
+                      width: 200,
+                      child: PlayButton(
+                        pauseIcon: const Icon(Icons.mic_rounded,
+                            color: Color.fromARGB(255, 2, 83, 154), size: 90),
+                        playIcon: const Icon(Icons.mic_off_rounded,
+                            color: Color.fromARGB(255, 2, 83, 154), size: 90),
+                        onPressed: () {},
+                      )
+                      // ),
+                      ),
                 ),
                 // Icon(
                 //   Icons.mic,
@@ -92,21 +88,6 @@ class _speakingState extends State<speaking> {
                 // ),
                 Expanded(child: Container())
               ],
-            )
-
-            // DropdownSearch<String>(
-            //   popupProps: PopupProps.menu(
-            //     showSelectedItems: true,
-            //     disabledItemFn: (String s) => s.startsWith('I'),
-            //   ),
-            //   items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
-            //   // dropdownSearchDecoration:  InputDecoration(
-            //   //     labelText: "Menu mode",
-            //   //     hintText: "country in menu mode",
-            //   // ),
-            //   onChanged: print,
-            //   selectedItem: "Brazil",
-            // )
-            ));
+            )));
   }
 }

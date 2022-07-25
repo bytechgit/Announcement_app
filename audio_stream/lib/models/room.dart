@@ -1,18 +1,18 @@
-import 'package:audio_stream/changeRoom.dart';
+import 'package:audio_stream/editRoom.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../addRoom.dart';
 
-class room extends StatefulWidget {
+class Room extends StatefulWidget {
   String text;
-  room({Key? key, required this.text}) : super(key: key);
+  Room({Key? key, required this.text}) : super(key: key);
 
   @override
-  State<room> createState() => _roomState();
+  State<Room> createState() => RoomState();
 }
 
-class _roomState extends State<room> {
+class RoomState extends State<Room> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,7 +20,7 @@ class _roomState extends State<room> {
         child: GestureDetector(
           onTap: () {},
           child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(5)),
               ),
               height: 65,
@@ -44,7 +44,7 @@ class _roomState extends State<room> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => changeRoom()));
+                                      builder: (context) => const EditRoom()));
                             },
                             child: Text(
                               widget.text,
@@ -69,7 +69,7 @@ class _roomState extends State<room> {
                     )
                   ],
                 ),
-                Divider(
+                const Divider(
                   thickness: 1,
                 ),
               ])),

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AddRoom extends StatefulWidget {
-  const AddRoom({Key? key}) : super(key: key);
+class EditRoom extends StatefulWidget {
+  const EditRoom({Key? key}) : super(key: key);
 
   @override
-  State<AddRoom> createState() => _AddRoomState();
+  State<EditRoom> createState() => _EditRoomState();
 }
 
-class _AddRoomState extends State<AddRoom> {
-  TextEditingController tagcontroller = TextEditingController();
+class _EditRoomState extends State<EditRoom> {
+  late TextEditingController tagcontroller = TextEditingController();
   final lista = [
-    'aaaaaa',
+    'aaa',
     'bbbbb',
-    'bbbbb',
+    'bbb',
     'bbbbb',
     'bbbbb',
     'bbbbb',
@@ -30,17 +30,18 @@ class _AddRoomState extends State<AddRoom> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Image.asset('images/roomPhoto.png',
-                        width: MediaQuery.of(context).size.width * 0.85),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Image.asset(
+                    'images/roomPhoto.png',
+                    width: MediaQuery.of(context).size.width * 0.85,
                   ),
                 ),
                 const Padding(
                   padding: EdgeInsets.fromLTRB(0, 40, 0, 30),
                   child: SizedBox(
                       height: 50,
+                      // padding: EdgeInsets.only(left: 20, right: 20),
                       child: TextField(
                           decoration: InputDecoration(
                         labelText: "Room name",
@@ -64,8 +65,9 @@ class _AddRoomState extends State<AddRoom> {
                           (e) => Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: Chip(
-                              backgroundColor: Color.fromARGB(255, 2, 83, 154),
-                              labelStyle: TextStyle(color: Colors.white),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 2, 83, 154),
+                              labelStyle: const TextStyle(color: Colors.white),
                               deleteIcon: const Icon(
                                 Icons.close,
                                 color: Colors.white,
@@ -88,7 +90,6 @@ class _AddRoomState extends State<AddRoom> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 40),
                   child: SizedBox(
-                    width: double.infinity,
                     child: TextField(
                       controller: tagcontroller,
                       keyboardType: TextInputType.multiline,
@@ -138,12 +139,40 @@ class _AddRoomState extends State<AddRoom> {
                     child: ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 2, 83, 154),
+                          primary: const Color.fromARGB(255, 2, 83, 154),
                         ),
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            'Add room',
+                            'Update room',
+                            style: GoogleFonts.openSans(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        )),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    'or',
+                    style: GoogleFonts.ubuntu(),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                  child: SizedBox(
+                    height: 45,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color.fromARGB(255, 2, 83, 154),
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Delete room',
                             style: GoogleFonts.openSans(
                                 color: Colors.white,
                                 fontSize: 22,

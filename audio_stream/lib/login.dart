@@ -67,7 +67,7 @@ class _loginState extends State<login> {
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
-                                          Radius.circular(20))),
+                                          Radius.circular(12))),
                                   fillColor: Colors.white,
                                   filled: true,
                                   hintText: 'Username',
@@ -77,8 +77,6 @@ class _loginState extends State<login> {
                                   [
                                     RequiredValidator(
                                         errorText: "Enter username"),
-                                    EmailValidator(
-                                        errorText: "Enter a valid username"),
                                   ],
                                 ),
                               ),
@@ -90,9 +88,9 @@ class _loginState extends State<login> {
                                 controller: passwordcontroller,
                                 obscureText: showPassword,
                                 decoration: InputDecoration(
-                                  border: OutlineInputBorder(
+                                  border: const OutlineInputBorder(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(20)),
+                                        BorderRadius.all(Radius.circular(12)),
                                   ),
                                   suffixIcon: IconButton(
                                       onPressed: () => {
@@ -102,11 +100,11 @@ class _loginState extends State<login> {
                                               },
                                             )
                                           },
-                                      icon: Icon(Icons.remove_red_eye)),
+                                      icon: const Icon(Icons.remove_red_eye)),
                                   fillColor: Colors.white,
                                   filled: true,
                                   hintText: "Password",
-                                  prefixIcon: Icon(Icons.lock),
+                                  prefixIcon: const Icon(Icons.lock),
                                 ),
                                 validator: MultiValidator(
                                   [
@@ -130,7 +128,7 @@ class _loginState extends State<login> {
                         height: 45,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Color.fromARGB(255, 2, 83, 154),
+                            primary: const Color.fromARGB(255, 2, 83, 154),
                             elevation: 5,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
@@ -138,12 +136,12 @@ class _loginState extends State<login> {
                           ),
                           onPressed: () async {
                             if (formkey.currentState?.validate() == true) {
-                              String result = await ua.Login(
-                                  username: usernamecontroller.text,
-                                  password: passwordcontroller.text);
+                              // String result = await ua.Login(
+                              //     username: usernamecontroller.text,
+                              //     password: passwordcontroller.text);
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(result)));
+                              // ScaffoldMessenger.of(context).showSnackBar(
+                              //     SnackBar(content: Text(result)));
                             }
                           },
                           child: Center(

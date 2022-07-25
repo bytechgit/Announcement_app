@@ -6,7 +6,8 @@ class Blob extends StatelessWidget {
   final double scale;
   final Color color;
 
-  const Blob({this.rotation = 0, this.scale = 1, required this.color});
+  const Blob({Key? key, this.rotation = 0, this.scale = 1, required this.color})
+      : super(key: key);
   //: assert(color != null);
 //@required this.color
   @override
@@ -18,7 +19,7 @@ class Blob extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(150),
               topRight: Radius.circular(240),
               bottomLeft: Radius.circular(220),

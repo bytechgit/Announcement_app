@@ -1,7 +1,5 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-
 import 'Blob.dart';
 
 class PlayButton extends StatefulWidget {
@@ -10,15 +8,16 @@ class PlayButton extends StatefulWidget {
   final Icon pauseIcon;
   final VoidCallback onPressed;
 
-  PlayButton(
-      {required this.onPressed,
+  const PlayButton(
+      {Key? key,
+      required this.onPressed,
       this.initialIsPlaying = false,
       this.playIcon = const Icon(Icons.volume_up),
       this.pauseIcon = const Icon(Icons.volume_down)})
-      : assert(onPressed != null);
+      : super(key: key);
 
   @override
-  _PlayButtonState createState() => _PlayButtonState();
+  State<PlayButton> createState() => _PlayButtonState();
 }
 
 class _PlayButtonState extends State<PlayButton> with TickerProviderStateMixin {
@@ -78,30 +77,33 @@ class _PlayButtonState extends State<PlayButton> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(minWidth: 48, minHeight: 48),
+      constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
       child: Stack(
         alignment: Alignment.center,
         children: [
           if (_showWaves) ...[
-            Blob(color: Color(0xff0092ff), scale: _scale, rotation: _rotation),
             Blob(
-                color: Color(0xff4ac7b7),
+                color: const Color(0xff0092ff),
+                scale: _scale,
+                rotation: _rotation),
+            Blob(
+                color: const Color(0xff4ac7b7),
                 scale: _scale,
                 rotation: _rotation * 2 - 30),
             Blob(
-                color: Color(0xffa4a6f6),
+                color: const Color(0xffa4a6f6),
                 scale: _scale,
                 rotation: _rotation * 3 - 45),
           ],
           Container(
-            constraints: BoxConstraints.expand(),
-            child: AnimatedSwitcher(
-              child: _buildIcon(isPlaying),
-              duration: _kToggleDuration,
-            ),
-            decoration: BoxDecoration(
+            constraints: const BoxConstraints.expand(),
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white,
+            ),
+            child: AnimatedSwitcher(
+              duration: _kToggleDuration,
+              child: _buildIcon(isPlaying),
             ),
           ),
         ],

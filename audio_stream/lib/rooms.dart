@@ -82,20 +82,20 @@ class _roomsState extends State<rooms> {
                 padding: const EdgeInsets.only(top: 20),
                 child: Column(
                   children: [
-                    room(text: 'Room 1'),
-                    room(text: 'Room 2'),
-                    room(text: 'Room 3'),
-                    room(text: 'Room 4'),
-                    room(text: 'Room 3'),
-                    room(text: 'Room 3'),
-                    room(text: 'Room 3'),
-                    room(text: 'Room 3'),
-                    room(text: 'Room 3'),
-                    room(text: 'Room 3'),
-                    room(text: 'Room 3'),
-                    room(text: 'Room 3'),
-                    room(text: 'Room 3'),
-                    room(text: 'Room 3'),
+                    Room(text: 'Room 1'),
+                    Room(text: 'Room 2'),
+                    Room(text: 'Room 3'),
+                    Room(text: 'Room 4'),
+                    Room(text: 'Room 3'),
+                    Room(text: 'Room 3'),
+                    Room(text: 'Room 3'),
+                    Room(text: 'Room 3'),
+                    Room(text: 'Room 3'),
+                    Room(text: 'Room 3'),
+                    Room(text: 'Room 3'),
+                    Room(text: 'Room 3'),
+                    Room(text: 'Room 3'),
+                    Room(text: 'Room 3'),
                   ],
                 ),
               )),
@@ -104,10 +104,10 @@ class _roomsState extends State<rooms> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => addRoom()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const AddRoom()));
           },
-          backgroundColor: Color.fromARGB(255, 2, 83, 154),
+          backgroundColor: const Color.fromARGB(255, 2, 83, 154),
           child: const Icon(
             Icons.add,
             size: 35,

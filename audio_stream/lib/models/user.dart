@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../changeUser.dart';
+import '../editUser.dart';
 
-class user extends StatefulWidget {
-  String text;
-  user({Key? key, required this.text}) : super(key: key);
+class User extends StatefulWidget {
+  final String text;
+  const User({Key? key, required this.text}) : super(key: key);
 
   @override
-  State<user> createState() => _userState();
+  State<User> createState() => _UserState();
 }
 
-class _userState extends State<user> {
+class _UserState extends State<User> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => changeUser()));
+            context, MaterialPageRoute(builder: (context) => const EditUser()));
       },
       child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(5)),
           ),
           height: 70,
@@ -35,7 +35,7 @@ class _userState extends State<user> {
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 5),
                     child: CircleAvatar(
                       radius: 21,
-                      backgroundColor: Color.fromARGB(255, 2, 83, 154),
+                      backgroundColor: const Color.fromARGB(255, 2, 83, 154),
                       child: Center(
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
@@ -65,7 +65,7 @@ class _userState extends State<user> {
                 ),
               ],
             ),
-            Divider(
+            const Divider(
               thickness: 1,
             ),
           ])),

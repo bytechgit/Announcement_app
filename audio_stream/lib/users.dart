@@ -4,14 +4,14 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class users extends StatefulWidget {
-  const users({Key? key}) : super(key: key);
+class Users extends StatefulWidget {
+  const Users({Key? key}) : super(key: key);
 
   @override
-  State<users> createState() => _usersState();
+  State<Users> createState() => _UsersState();
 }
 
-List Users = [
+List users1 = [
   'marija',
   'nikola',
   'sasa',
@@ -22,20 +22,20 @@ List Users = [
   'bla'
 ];
 
-class _usersState extends State<users> {
+class _UsersState extends State<Users> {
   @override
-  final TextEditingController controller = TextEditingController();
+  //final TextEditingController controller = TextEditingController();
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,
           unselectedItemColor: Colors.grey,
-          selectedItemColor: Color.fromARGB(255, 2, 83, 154),
+          selectedItemColor: const Color.fromARGB(255, 2, 83, 154),
           type: BottomNavigationBarType.fixed,
           showSelectedLabels: false,
           showUnselectedLabels: false,
-          items: <BottomNavigationBarItem>[
+          items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.mic,
@@ -70,7 +70,7 @@ class _usersState extends State<users> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  items: Users,
+                  items: users1,
                   showSearchBox: true,
                 ),
               ),
@@ -81,18 +81,18 @@ class _usersState extends State<users> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 25),
                   child: Column(
-                    children: [
-                      user(text: 'marija'),
-                      user(text: 'nikola'),
-                      user(text: 'sasa'),
-                      user(text: 'nadja'),
-                      user(text: 'marija'),
-                      user(text: 'marija'),
-                      user(text: 'marija'),
-                      user(text: 'marija'),
-                      user(text: 'marija'),
-                      user(text: 'marija'),
-                      user(text: 'marija'),
+                    children: const [
+                      User(text: 'marija'),
+                      User(text: 'nikola'),
+                      User(text: 'sasa'),
+                      User(text: 'nadja'),
+                      User(text: 'marija'),
+                      User(text: 'marija'),
+                      User(text: 'marija'),
+                      User(text: 'marija'),
+                      User(text: 'marija'),
+                      User(text: 'marija'),
+                      User(text: 'marija'),
                     ],
                   ),
                 ),
@@ -103,9 +103,9 @@ class _usersState extends State<users> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const addUser()));
+                MaterialPageRoute(builder: (context) => const AddUser()));
           },
-          backgroundColor: Color.fromARGB(255, 2, 83, 154),
+          backgroundColor: const Color.fromARGB(255, 2, 83, 154),
           child: const Icon(
             Icons.add,
             size: 35,

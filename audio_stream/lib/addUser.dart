@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class addUser extends StatefulWidget {
-  const addUser({Key? key}) : super(key: key);
+class AddUser extends StatefulWidget {
+  const AddUser({Key? key}) : super(key: key);
 
   @override
-  State<addUser> createState() => _addUserState();
+  State<AddUser> createState() => _AddUserState();
 }
 
-class _addUserState extends State<addUser> {
-  @override
+class _AddUserState extends State<AddUser> {
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
   late TextEditingController tagcontroller = TextEditingController();
-
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
