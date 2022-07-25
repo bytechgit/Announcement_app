@@ -2,11 +2,9 @@ import 'package:audio_stream/editRoom.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../addRoom.dart';
-
 class Room extends StatefulWidget {
-  String text;
-  Room({Key? key, required this.text}) : super(key: key);
+  final String text;
+  const Room({Key? key, required this.text}) : super(key: key);
 
   @override
   State<Room> createState() => RoomState();
@@ -33,7 +31,7 @@ class RoomState extends State<Room> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.9,
+                      // width: MediaQuery.of(context).size.width * 0.9,
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
@@ -56,6 +54,7 @@ class RoomState extends State<Room> {
                         ),
                       ),
                     ),
+                    const Expanded(child: SizedBox()),
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerRight,

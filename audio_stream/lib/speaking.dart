@@ -1,7 +1,10 @@
+import 'package:audio_stream/models/roomModel.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:get/get.dart';
 
 import 'PlayButton.dart';
+import 'controllers/user_controller.dart';
 
 class Speaking extends StatefulWidget {
   const Speaking({Key? key}) : super(key: key);
@@ -10,84 +13,51 @@ class Speaking extends StatefulWidget {
   State<Speaking> createState() => _SpeakingState();
 }
 
-List rooms = ['Room 1', 'Room 2', 'Room 3', 'Room 4'];
-
 class _SpeakingState extends State<Speaking> {
   //final TextEditingController _controller = TextEditingController();
+  final uc = Get.find<UserController>();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-            backgroundColor: const Color.fromRGBO(255, 255, 255, 0.95),
-            bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Colors.white,
-              unselectedItemColor: Colors.grey,
-              selectedItemColor: const Color.fromARGB(255, 2, 83, 154),
-              type: BottomNavigationBarType.fixed,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.mic,
-                  ),
-                  label: '',
+        child: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+          child: SizedBox(
+            child: Obx(
+              () => DropdownSearch<String>(
+                //compareFn: (i1, i2) => i1.roomId== i2.roomId,
+                items: uc.rooms.value.map((e) => e.roomId).toList(),
+                selectedItem: "choose a room",
+                popupProps: const PopupProps.modalBottomSheet(
+                  showSearchBox: true,
+                  fit: FlexFit.tight,
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.person,
-                  ),
-                  label: '',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.person,
-                  ),
-                  label: '',
-                ),
-              ],
+              ),
             ),
-            body: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-                  child: SizedBox(
-                    child: DropdownSearch(
-                      // dropdownSearchDecoration: InputDecoration(
-                      //labelText: "Menu mode",
-                      //  ),
-                      dropdownSearchDecoration: InputDecoration(
-                        labelText: "Room",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      items: rooms,
-                      showSearchBox: true,
-                    ),
-                  ),
-                ),
-                Expanded(child: Container()),
-                Center(
-                  child: SizedBox(
-                      height: 200,
-                      width: 200,
-                      child: PlayButton(
-                        pauseIcon: const Icon(Icons.mic_rounded,
-                            color: Color.fromARGB(255, 2, 83, 154), size: 90),
-                        playIcon: const Icon(Icons.mic_off_rounded,
-                            color: Color.fromARGB(255, 2, 83, 154), size: 90),
-                        onPressed: () {},
-                      )
-                      // ),
-                      ),
-                ),
-                // Icon(
-                //   Icons.mic,
-                //   size: 150,
-                // ),
-                Expanded(child: Container())
-              ],
-            )));
+          ),
+        ),
+        Expanded(child: Container()),
+        Center(
+          child: SizedBox(
+              height: 200,
+              width: 200,
+              child: PlayButton(
+                pauseIcon: const Icon(Icons.mic_rounded,
+                    color: Color.fromARGB(255, 2, 83, 154), size: 90),
+                playIcon: const Icon(Icons.mic_off_rounded,
+                    color: Color.fromARGB(255, 2, 83, 154), size: 90),
+                onPressed: () {},
+              )
+              // ),
+              ),
+        ),
+        // Icon(
+        //   Icons.mic,
+        //   size: 150,
+        // ),
+        Expanded(child: Container())
+      ],
+    ));
   }
 }

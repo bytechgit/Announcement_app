@@ -1,108 +1,80 @@
-import 'package:audio_stream/models/room.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+import 'package:audio_stream/models/roomModel.dart';
+import 'package:audio_stream/room.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:searchable_listview/resources/arrays.dart';
+import 'package:searchable_listview/searchable_listview.dart';
 
 import 'addRoom.dart';
+import 'controllers/user_controller.dart';
 
-class rooms extends StatefulWidget {
-  const rooms({Key? key}) : super(key: key);
+class Rooms extends StatefulWidget {
+  const Rooms({Key? key}) : super(key: key);
 
   @override
-  State<rooms> createState() => _roomsState();
+  State<Rooms> createState() => _RoomsState();
 }
 
-List Rooms = [
-  'Room 1',
-  'Room 2',
-  'Room 3',
-  'Room 4',
-  'Room 5',
-  'Room 6',
-  'Room 7',
-  'Room 8'
+List<Room> rooms = [
+  const Room(text: 'Room 1'),
+  const Room(text: 'Room 2'),
+  const Room(text: 'Room 3'),
+  const Room(text: 'Room 4'),
+  const Room(text: 'Room 3'),
+  const Room(text: 'Room 3'),
+  const Room(text: 'Room 3'),
+  const Room(text: 'Room 3'),
+  const Room(text: 'Room 3'),
+  const Room(text: 'Room 3'),
+  const Room(text: 'Room 3'),
+  const Room(text: 'Room 3'),
+  const Room(text: 'Room 3'),
+  const Room(text: 'Room 3'),
 ];
 
-class _roomsState extends State<rooms> {
+class _RoomsState extends State<Rooms> {
+  final uc = Get.find<UserController>();
   @override
-  final TextEditingController controller = TextEditingController();
+  //final TextEditingController controller = TextEditingController();
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          unselectedItemColor: Colors.grey,
-          selectedItemColor: Color.fromARGB(255, 2, 83, 154),
-          type: BottomNavigationBarType.fixed,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.mic,
-              ),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
-              ),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
-              ),
-              label: '',
-            ),
-          ],
-        ),
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-              child: SizedBox(
-                child: DropdownSearch(
-                  // dropdownSearchDecoration: InputDecoration(
-                  //labelText: "Menu mode",
-                  //  ),
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Rooms",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                child: SizedBox(
+                  child: SearchableList<RoomModel>(
+                    searchTextPosition: SearchTextPosition.top,
+                    initialList: uc.rooms.value,
+                    builder: (RoomModel room) => Room(text: room.roomId),
+                    filter: (value) => uc.rooms.value
+                        .where(
+                          (element) =>
+                              element.roomId.toLowerCase().contains(value),
+                        )
+                        .toList(),
+                    //emptyWidget: Container(),
+                    inputDecoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      labelText: "Search Rooms",
+                      fillColor: Colors.white,
+                      isDense: true,
+                      constraints: BoxConstraints.tightFor(
+                        width: MediaQuery.of(context).size.width * 0.95,
+                      ),
                     ),
                   ),
-                  items: Rooms,
-                  showSearchBox: true,
                 ),
               ),
             ),
-            Expanded(
-              child: SingleChildScrollView(
-                  child: Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Column(
-                  children: [
-                    Room(text: 'Room 1'),
-                    Room(text: 'Room 2'),
-                    Room(text: 'Room 3'),
-                    Room(text: 'Room 4'),
-                    Room(text: 'Room 3'),
-                    Room(text: 'Room 3'),
-                    Room(text: 'Room 3'),
-                    Room(text: 'Room 3'),
-                    Room(text: 'Room 3'),
-                    Room(text: 'Room 3'),
-                    Room(text: 'Room 3'),
-                    Room(text: 'Room 3'),
-                    Room(text: 'Room 3'),
-                    Room(text: 'Room 3'),
-                  ],
-                ),
-              )),
-            )
           ],
         ),
         floatingActionButton: FloatingActionButton(
+          heroTag: "btn1",
           onPressed: () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const AddRoom()));

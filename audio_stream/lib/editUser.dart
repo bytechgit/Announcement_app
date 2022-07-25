@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ChangeUser extends StatefulWidget {
-  const ChangeUser({Key? key}) : super(key: key);
+class EditUser extends StatefulWidget {
+  const EditUser({Key? key}) : super(key: key);
 
   @override
-  State<ChangeUser> createState() => _ChangeUserState();
+  State<EditUser> createState() => _EditUserState();
 }
 
-class _ChangeUserState extends State<ChangeUser> {
+class _EditUserState extends State<EditUser> {
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   final lista = [
     'aaaaaa',
@@ -138,7 +138,10 @@ class _ChangeUserState extends State<ChangeUser> {
                               color: Color.fromARGB(255, 2, 83, 154),
                             ),
                             onPressed: () {
-                              setState(() {});
+                              setState(() {
+                                lista.add(tagcontroller.text);
+                                tagcontroller.text = '';
+                              });
                             }),
 
                     fillColor: Colors.white,

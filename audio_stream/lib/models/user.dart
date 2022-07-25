@@ -47,8 +47,7 @@ class _UserState extends State<User> {
                         ),
                       ),
                     )),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.85,
+                Expanded(
                   child: FittedBox(
                     alignment: Alignment.centerLeft,
                     fit: BoxFit.scaleDown,

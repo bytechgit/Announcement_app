@@ -1,23 +1,30 @@
+import 'package:audio_stream/homepage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
-class login extends StatefulWidget {
-  const login({Key? key}) : super(key: key);
+import 'controllers/navBarControler.dart';
+import 'controllers/user_controller.dart';
+import 'controllers/web_socket.dart';
+
+class Login extends StatefulWidget {
+  const Login({Key? key}) : super(key: key);
 
   @override
-  State<login> createState() => _loginState();
+  State<Login> createState() => _LoginState();
 }
 
-class _loginState extends State<login> {
-//  UserAuthentication ua = UserAuthentication();
+class _LoginState extends State<Login> {
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   bool showPassword = true;
   final usernamecontroller = TextEditingController();
   final passwordcontroller = TextEditingController();
 
-  get ua => null;
+  final wsc = Get.find<WebSocketController>();
+  final uc = Get.find<UserController>();
+  final navBar = Get.find<NavBarControler>();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -135,13 +142,22 @@ class _loginState extends State<login> {
                             ),
                           ),
                           onPressed: () async {
+                            uc.getRooms();
                             if (formkey.currentState?.validate() == true) {
-                              // String result = await ua.Login(
-                              //     username: usernamecontroller.text,
-                              //     password: passwordcontroller.text);
-
-                              // ScaffoldMessenger.of(context).showSnackBar(
-                              //     SnackBar(content: Text(result)));
+                              final result = await uc.login(
+                                  username: usernamecontroller.text,
+                                  password: passwordcontroller.text);
+                              if (result) {
+                                // ignore: use_build_context_synchronously
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Homepage()),
+                                );
+                              } else {
+                                Get.snackbar('Login', "Error",
+                                    backgroundColor: Colors.white);
+                              }
                             }
                           },
                           child: Center(

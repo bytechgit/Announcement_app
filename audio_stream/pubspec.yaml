@@ -39,8 +39,10 @@ dependencies:
   web_socket_channel: ^2.2.0
   google_fonts: ^3.0.1
   form_field_validator: ^1.1.0
-  dropdown_search: ^3.0.1
-
+  dropdown_search: ^5.0.2
+  searchable_listview: ^1.7.2
+  get: ^4.6.5
+  sound_stream: ^0.3.0
 
 
 dev_dependencies:
