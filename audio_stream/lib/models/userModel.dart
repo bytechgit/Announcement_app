@@ -1,13 +1,13 @@
 class UserModel {
   String username;
   String password;
-  List<String>? rooms;
+  List<String> rooms;
   bool admin;
   UserModel(
       {required this.username,
       required this.password,
       required this.admin,
-      this.rooms});
+      required this.rooms});
 
   Map<String, dynamic> toJson() => {
         'username': username,
@@ -18,7 +18,7 @@ class UserModel {
   UserModel.fromJson(Map<String, dynamic> map)
       : username = map["username"],
         password = map["password"],
-        admin = map["admin"],
+        admin = map["admin"] ?? false,
         rooms = (((map["rooms"] ?? []) as List<dynamic>)
             .map((e) => e.toString())
             .toList());

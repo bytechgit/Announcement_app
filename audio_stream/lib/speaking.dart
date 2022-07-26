@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import 'PlayButton.dart';
 import 'controllers/user_controller.dart';
+import 'controllers/web_socket.dart';
 
 class Speaking extends StatefulWidget {
   const Speaking({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class Speaking extends StatefulWidget {
 
 class _SpeakingState extends State<Speaking> {
   //final TextEditingController _controller = TextEditingController();
+  final wsc = Get.find<WebSocketController>();
   final uc = Get.find<UserController>();
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,9 @@ class _SpeakingState extends State<Speaking> {
           child: SizedBox(
             child: Obx(
               () => DropdownSearch<String>(
+                onChanged: (room) {
+                  uc.selectedRoom = room ?? "";
+                },
                 //compareFn: (i1, i2) => i1.roomId== i2.roomId,
                 items: uc.rooms.value.map((e) => e.roomId).toList(),
                 selectedItem: "choose a room",
@@ -38,16 +43,15 @@ class _SpeakingState extends State<Speaking> {
           ),
         ),
         Expanded(child: Container()),
-        Center(
+        const Center(
           child: SizedBox(
               height: 200,
               width: 200,
               child: PlayButton(
-                pauseIcon: const Icon(Icons.mic_rounded,
+                pauseIcon: Icon(Icons.mic_rounded,
                     color: Color.fromARGB(255, 2, 83, 154), size: 90),
-                playIcon: const Icon(Icons.mic_off_rounded,
+                playIcon: Icon(Icons.mic_off_rounded,
                     color: Color.fromARGB(255, 2, 83, 154), size: 90),
-                onPressed: () {},
               )
               // ),
               ),

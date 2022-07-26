@@ -1,8 +1,13 @@
+import 'package:audio_stream/models/roomModel.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'controllers/user_controller.dart';
+
 class EditRoom extends StatefulWidget {
-  const EditRoom({Key? key}) : super(key: key);
+  final RoomModel room;
+  const EditRoom({Key? key, required this.room}) : super(key: key);
 
   @override
   State<EditRoom> createState() => _EditRoomState();
@@ -10,18 +15,10 @@ class EditRoom extends StatefulWidget {
 
 class _EditRoomState extends State<EditRoom> {
   late TextEditingController tagcontroller = TextEditingController();
-  final lista = [
-    'aaa',
-    'bbbbb',
-    'bbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb'
-  ];
+
   @override
   Widget build(BuildContext context) {
+    final uc = Get.find<UserController>();
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -37,30 +34,32 @@ class _EditRoomState extends State<EditRoom> {
                     width: MediaQuery.of(context).size.width * 0.85,
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 40, 0, 30),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 40, 0, 30),
                   child: SizedBox(
                       height: 50,
                       // padding: EdgeInsets.only(left: 20, right: 20),
                       child: TextField(
+                          enabled: false,
                           decoration: InputDecoration(
-                        labelText: "Room name",
-                        floatingLabelStyle:
-                            TextStyle(color: Color.fromARGB(255, 2, 83, 154)),
-                        prefixIcon: Icon(Icons.edit),
-                        hintStyle: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                        labelStyle: TextStyle(fontSize: 17, color: Colors.grey),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 2, 83, 154)),
-                        ),
-                      ))),
+                            labelText: widget.room.roomId,
+                            floatingLabelStyle: const TextStyle(
+                                color: Color.fromARGB(255, 2, 83, 154)),
+                            prefixIcon: const Icon(Icons.edit),
+                            hintStyle: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                            labelStyle: const TextStyle(
+                                fontSize: 17, color: Colors.grey),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 2, 83, 154)),
+                            ),
+                          ))),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Wrap(
-                    children: lista
+                    children: widget.room.users
                         .map(
                           (e) => Padding(
                             padding: const EdgeInsets.only(right: 8.0),
@@ -75,7 +74,7 @@ class _EditRoomState extends State<EditRoom> {
                               ),
                               onDeleted: () {
                                 setState(() {
-                                  lista.remove(e);
+                                  widget.room.users.remove(e);
                                 });
                               },
                               label: Text(
@@ -105,7 +104,12 @@ class _EditRoomState extends State<EditRoom> {
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    lista.add(tagcontroller.text);
+                                    if (widget.room.users
+                                        .contains(tagcontroller.text)) {
+                                      widget.room.users.add(tagcontroller.text);
+                                    } else {
+                                      Get.snackbar("Error", "User not found");
+                                    }
                                     tagcontroller.text = '';
                                   });
                                 }),
@@ -137,7 +141,9 @@ class _EditRoomState extends State<EditRoom> {
                     height: 45,
                     width: double.infinity,
                     child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          uc.updateRoom(room: widget.room);
+                        },
                         style: ElevatedButton.styleFrom(
                           primary: const Color.fromARGB(255, 2, 83, 154),
                         ),
@@ -165,7 +171,9 @@ class _EditRoomState extends State<EditRoom> {
                     height: 45,
                     width: double.infinity,
                     child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          uc.deleteRoom(roomId: widget.room.roomId);
+                        },
                         style: ElevatedButton.styleFrom(
                           primary: const Color.fromARGB(255, 2, 83, 154),
                         ),

@@ -15,23 +15,6 @@ class Rooms extends StatefulWidget {
   State<Rooms> createState() => _RoomsState();
 }
 
-List<Room> rooms = [
-  const Room(text: 'Room 1'),
-  const Room(text: 'Room 2'),
-  const Room(text: 'Room 3'),
-  const Room(text: 'Room 4'),
-  const Room(text: 'Room 3'),
-  const Room(text: 'Room 3'),
-  const Room(text: 'Room 3'),
-  const Room(text: 'Room 3'),
-  const Room(text: 'Room 3'),
-  const Room(text: 'Room 3'),
-  const Room(text: 'Room 3'),
-  const Room(text: 'Room 3'),
-  const Room(text: 'Room 3'),
-  const Room(text: 'Room 3'),
-];
-
 class _RoomsState extends State<Rooms> {
   final uc = Get.find<UserController>();
   @override
@@ -45,26 +28,28 @@ class _RoomsState extends State<Rooms> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
                 child: SizedBox(
-                  child: SearchableList<RoomModel>(
-                    searchTextPosition: SearchTextPosition.top,
-                    initialList: uc.rooms.value,
-                    builder: (RoomModel room) => Room(text: room.roomId),
-                    filter: (value) => uc.rooms.value
-                        .where(
-                          (element) =>
-                              element.roomId.toLowerCase().contains(value),
-                        )
-                        .toList(),
-                    //emptyWidget: Container(),
-                    inputDecoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      labelText: "Search Rooms",
-                      fillColor: Colors.white,
-                      isDense: true,
-                      constraints: BoxConstraints.tightFor(
-                        width: MediaQuery.of(context).size.width * 0.95,
+                  child: Obx(
+                    () => SearchableList<RoomModel>(
+                      searchTextPosition: SearchTextPosition.top,
+                      initialList: uc.rooms.value,
+                      builder: (RoomModel room) => Room(room: room),
+                      filter: (value) => uc.rooms.value
+                          .where(
+                            (element) =>
+                                element.roomId.toLowerCase().contains(value),
+                          )
+                          .toList(),
+                      //emptyWidget: Container(),
+                      inputDecoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        labelText: "Search Rooms",
+                        fillColor: Colors.white,
+                        isDense: true,
+                        constraints: BoxConstraints.tightFor(
+                          width: MediaQuery.of(context).size.width * 0.95,
+                        ),
                       ),
                     ),
                   ),

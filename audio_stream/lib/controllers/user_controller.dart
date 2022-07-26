@@ -2,17 +2,21 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:audio_stream/models/roomModel.dart';
 import 'package:get/get.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/userModel.dart';
 
 class UserController extends GetxController {
   final user = Rx<UserModel?>(null);
   final rooms = Rx<List<RoomModel>>([]);
-  UserController();
+  final users = Rx<List<UserModel>>([]);
+  SharedPreferences prefs;
+  String? selectedRoom;
+  UserController({required this.prefs});
   String serverAddress =
       "http://vargapp-env.eba-is6gvbmw.us-east-1.elasticbeanstalk.com";
-  Future<bool> login(
+  Future<int> login(
       {required String username, required String password}) async {
     try {
       final response = await http.post(
@@ -28,13 +32,20 @@ class UserController extends GetxController {
       inspect(response);
       if (response.statusCode == 200) {
         user.value = UserModel.fromJson(jsonDecode(response.body));
-        getRooms();
-        return true;
+        prefs.setString("user", response.body);
+
+        if (user.value!.admin) {
+          getRooms();
+          getUsers();
+          return 1;
+        }
+
+        return 2;
       } else {
-        return false;
+        return 0;
       }
     } catch (e) {
-      return false;
+      return 0;
     }
   }
 
@@ -44,8 +55,10 @@ class UserController extends GetxController {
       {required String username,
       required String password,
       required bool admin,
-      List<String>? rooms}) async {
+      required List<String> rooms}) async {
     try {
+      final user = UserModel(
+          username: username, password: password, admin: admin, rooms: rooms);
       print("kjkk");
       final response = await http.post(
         Uri.parse('$serverAddress/addUser'),
@@ -53,16 +66,13 @@ class UserController extends GetxController {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode({
-          'user': UserModel(
-                  username: username,
-                  password: password,
-                  admin: admin,
-                  rooms: rooms)
-              .toJson(),
+          'user': user.toJson(),
         }),
       );
       inspect(response);
       if (response.statusCode == 200) {
+        users.value.add(user);
+        users.refresh();
         return "User added successfully";
       } else {
         return response.body.toString();
@@ -76,15 +86,14 @@ class UserController extends GetxController {
   ///
   ///add user to room
   ///
-  Future<bool> addUserToRoom(
-      {required String username, required List<String> rooms}) async {
+  Future<bool> updateRoom({required RoomModel room}) async {
     try {
       final response = await http.post(
-        Uri.parse('$serverAddress/addUserToRoom'),
+        Uri.parse('$serverAddress/updateRoom'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'username': username, 'rooms': rooms}),
+        body: jsonEncode({'room': room.toJson()}),
       );
       if (response.statusCode == 200) {
         return true;
@@ -100,7 +109,8 @@ class UserController extends GetxController {
   ///
   ///add room
   ///
-  Future<String> addRoom({required String roomId, List<String>? users}) async {
+  Future<String> addRoom(
+      {required String roomId, required List<String> users}) async {
     try {
       final response = await http.post(
         Uri.parse('$serverAddress/addRoom'),
@@ -111,6 +121,8 @@ class UserController extends GetxController {
       );
       inspect(response);
       if (response.statusCode == 200) {
+        rooms.value.add(RoomModel(roomId: roomId, users: users));
+        rooms.refresh();
         return "Room added successfully";
       } else if (response.statusCode == 398) {
         return "Room already exist";
@@ -137,6 +149,8 @@ class UserController extends GetxController {
       );
       inspect(response);
       if (response.statusCode == 200) {
+        rooms.value.removeWhere((element) => element.roomId == roomId);
+        rooms.refresh();
         return true;
       } else {
         return false;
@@ -159,7 +173,10 @@ class UserController extends GetxController {
         },
         body: jsonEncode({'username': username}),
       );
+      inspect(response);
       if (response.statusCode == 200) {
+        users.value.removeWhere((element) => element.username == username);
+        users.refresh();
         return true;
       } else {
         return false;
@@ -223,4 +240,37 @@ class UserController extends GetxController {
       return e.toString();
     }
   }
+
+  ///
+  ////
+  ///get users
+  ///
+  Future<String> getUsers() async {
+    try {
+      final response = await http.post(
+        Uri.parse('$serverAddress/loadUsers'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      inspect(response);
+      if (response.statusCode == 200) {
+        users.value = (jsonDecode(response.body) as List)
+            .map((e) => UserModel.fromJson(e))
+            .toList();
+        inspect(users);
+        return "Loaded successfully";
+      } else {
+        return response.body.toString();
+      }
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
+  }
+
+  /////hive
+  ///
+  ///
+
 }

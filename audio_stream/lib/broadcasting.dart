@@ -21,16 +21,15 @@ class _BroadcastingState extends State<Broadcasting> {
             Expanded(
               child: Container(),
             ),
-            Center(
+            const Center(
               child: SizedBox(
                 height: 200,
                 width: 200,
                 child: PlayButton(
-                  pauseIcon: const Icon(Icons.volume_up_rounded,
+                  pauseIcon: Icon(Icons.volume_up_rounded,
                       color: Color.fromARGB(255, 2, 83, 154), size: 90),
-                  playIcon: const Icon(Icons.volume_off_rounded,
+                  playIcon: Icon(Icons.volume_off_rounded,
                       color: Color.fromARGB(255, 2, 83, 154), size: 90),
-                  onPressed: () {},
                 ),
               ),
             ),

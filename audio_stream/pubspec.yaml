@@ -43,6 +43,7 @@ dependencies:
   searchable_listview: ^1.7.2
   get: ^4.6.5
   sound_stream: ^0.3.0
+  shared_preferences: ^2.0.15
 
 
 dev_dependencies:

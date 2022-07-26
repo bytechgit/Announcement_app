@@ -1,8 +1,14 @@
+import 'package:audio_stream/models/userModel.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'controllers/user_controller.dart';
+import 'models/roomModel.dart';
+
 class EditUser extends StatefulWidget {
-  const EditUser({Key? key}) : super(key: key);
+  final UserModel user;
+  const EditUser({Key? key, required this.user}) : super(key: key);
 
   @override
   State<EditUser> createState() => _EditUserState();
@@ -10,19 +16,18 @@ class EditUser extends StatefulWidget {
 
 class _EditUserState extends State<EditUser> {
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
-  final lista = [
-    'aaaaaa',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb'
-  ];
   TextEditingController tagcontroller = TextEditingController();
+
+  TextEditingController passwordcontroller = TextEditingController();
+  @override
+  void initState() {
+    passwordcontroller.text = widget.user.password;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final uc = Get.find<UserController>();
     return SafeArea(
       child: Scaffold(
           body: SingleChildScrollView(
@@ -51,49 +56,63 @@ class _EditUserState extends State<EditUser> {
                       child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       SizedBox(
                         height: 50,
                         child: TextField(
+                            enabled: false,
                             decoration: InputDecoration(
-                          labelText: "Username",
-                          floatingLabelStyle:
-                              TextStyle(color: Color.fromARGB(255, 2, 83, 154)),
-                          prefixIcon: Icon(Icons.people),
-                          hintStyle: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                          labelStyle:
-                              TextStyle(fontSize: 17, color: Colors.grey),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 2, 83, 154)),
-                          ), //label style
-                        )),
+                              labelText: widget.user.username,
+                              floatingLabelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 2, 83, 154)),
+                              prefixIcon: const Icon(Icons.people),
+                              hintStyle: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                              labelStyle: const TextStyle(
+                                  fontSize: 17, color: Colors.grey),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 2, 83, 154)),
+                              ), //label style
+                            )),
                       ),
                       SizedBox(
                           height: 50,
                           child: TextField(
-                              decoration: InputDecoration(
-                            labelText: "Password",
-                            floatingLabelStyle: TextStyle(
-                                color: Color.fromARGB(255, 2, 83, 154)),
-                            prefixIcon: Icon(Icons.lock),
-                            hintStyle: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                            labelStyle:
-                                TextStyle(fontSize: 17, color: Colors.grey),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 2, 83, 154)),
-                            ),
-                          ))),
+                              controller: passwordcontroller,
+                              decoration: const InputDecoration(
+                                labelText: "Password",
+                                floatingLabelStyle: TextStyle(
+                                    color: Color.fromARGB(255, 2, 83, 154)),
+                                prefixIcon: Icon(Icons.lock),
+                                hintStyle: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                labelStyle:
+                                    TextStyle(fontSize: 17, color: Colors.grey),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 2, 83, 154)),
+                                ),
+                              ))),
                     ],
                   ))),
+            ),
+            CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text("admin"),
+              value: widget.user.admin,
+              onChanged: (newValue) {
+                setState(() {
+                  widget.user.admin = newValue ?? false;
+                });
+              },
+              controlAffinity:
+                  ListTileControlAffinity.leading, //  <-- leading Checkbox
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Wrap(
-                children: lista
+                children: widget.user.rooms
                     .map(
                       (e) => Padding(
                         padding: const EdgeInsets.only(right: 8.0),
@@ -108,7 +127,7 @@ class _EditUserState extends State<EditUser> {
                           ),
                           onDeleted: () {
                             setState(() {
-                              lista.remove(e);
+                              widget.user.rooms.remove(e);
                             });
                           },
                           label: Text(
@@ -139,7 +158,19 @@ class _EditUserState extends State<EditUser> {
                             ),
                             onPressed: () {
                               setState(() {
-                                lista.add(tagcontroller.text);
+                                if (uc.rooms.value
+                                        .firstWhere(
+                                            (element) =>
+                                                element.roomId ==
+                                                tagcontroller.text,
+                                            orElse: () => RoomModel(
+                                                roomId: "", users: []))
+                                        .roomId ==
+                                    tagcontroller.text) {
+                                  widget.user.rooms.add(tagcontroller.text);
+                                } else {
+                                  Get.snackbar("Error", "Room not found");
+                                }
                                 tagcontroller.text = '';
                               });
                             }),
@@ -171,7 +202,10 @@ class _EditUserState extends State<EditUser> {
                 height: 45,
                 width: double.infinity,
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      widget.user.password = passwordcontroller.text;
+                      uc.updateUser(u: widget.user);
+                    },
                     style: ElevatedButton.styleFrom(
                       primary: const Color.fromARGB(255, 2, 83, 154),
                     ),
@@ -197,7 +231,9 @@ class _EditUserState extends State<EditUser> {
                 height: 45,
                 width: double.infinity,
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      uc.deleteUser(username: widget.user.username);
+                    },
                     style: ElevatedButton.styleFrom(
                       primary: const Color.fromARGB(255, 2, 83, 154),
                     ),

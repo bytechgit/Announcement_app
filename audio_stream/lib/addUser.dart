@@ -1,6 +1,10 @@
+import 'package:audio_stream/models/roomModel.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'controllers/user_controller.dart';
 
 class AddUser extends StatefulWidget {
   const AddUser({Key? key}) : super(key: key);
@@ -11,19 +15,14 @@ class AddUser extends StatefulWidget {
 
 class _AddUserState extends State<AddUser> {
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
-  final lista = [
-    'aaaaaa',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb'
-  ];
-  late TextEditingController tagcontroller = TextEditingController();
+  List<String> rooms = [];
+  TextEditingController tagcontroller = TextEditingController();
+  TextEditingController usernamecontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
+  bool admin = false;
   @override
   Widget build(BuildContext context) {
+    final uc = Get.find<UserController>();
     return SafeArea(
       child: Scaffold(
           body: SingleChildScrollView(
@@ -57,32 +56,35 @@ class _AddUserState extends State<AddUser> {
                   child: Center(
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 20.0),
-                        child: SizedBox(
-                          height: 50,
-                          child: TextField(
-                              decoration: InputDecoration(
-                            labelText: "Username",
-                            floatingLabelStyle: TextStyle(
-                                color: Color.fromARGB(255, 2, 83, 154)),
-                            prefixIcon: Icon(Icons.people),
-                            hintStyle: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                            labelStyle:
-                                TextStyle(fontSize: 17, color: Colors.grey),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
+                    children: [
+                      SizedBox(
+                        height: 80,
+                        child: TextFormField(
+                            controller: usernamecontroller,
+                            validator:
+                                RequiredValidator(errorText: "Enter username"),
+                            decoration: const InputDecoration(
+                              labelText: "Username",
+                              floatingLabelStyle: TextStyle(
                                   color: Color.fromARGB(255, 2, 83, 154)),
-                            ), //label style
-                          )),
-                        ),
+                              prefixIcon: Icon(Icons.people),
+                              hintStyle: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                              labelStyle:
+                                  TextStyle(fontSize: 17, color: Colors.grey),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 2, 83, 154)),
+                              ), //label style
+                            )),
                       ),
                       SizedBox(
-                          height: 50,
-                          child: TextField(
-                              decoration: InputDecoration(
+                        height: 80,
+                        child: TextFormField(
+                          controller: passwordcontroller,
+                          validator:
+                              RequiredValidator(errorText: "Enter password"),
+                          decoration: const InputDecoration(
                             labelText: "Password",
                             floatingLabelStyle: TextStyle(
                                 color: Color.fromARGB(255, 2, 83, 154)),
@@ -95,15 +97,28 @@ class _AddUserState extends State<AddUser> {
                               borderSide: BorderSide(
                                   color: Color.fromARGB(255, 2, 83, 154)),
                             ),
-                          ))),
+                          ),
+                        ),
+                      ),
                     ],
                   ))),
             ),
-
+            CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text("admin"),
+              value: admin,
+              onChanged: (newValue) {
+                setState(() {
+                  admin = newValue ?? false;
+                });
+              },
+              controlAffinity:
+                  ListTileControlAffinity.leading, //  <-- leading Checkbox
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Wrap(
-                children: lista
+                children: rooms
                     .map(
                       (e) => Padding(
                         padding: const EdgeInsets.only(right: 8.0),
@@ -118,7 +133,7 @@ class _AddUserState extends State<AddUser> {
                           ),
                           onDeleted: () {
                             setState(() {
-                              lista.remove(e);
+                              rooms.remove(e);
                             });
                           },
                           label: Text(
@@ -150,7 +165,19 @@ class _AddUserState extends State<AddUser> {
                             ),
                             onPressed: () {
                               setState(() {
-                                lista.add(tagcontroller.text);
+                                if (uc.rooms.value
+                                        .firstWhere(
+                                            (element) =>
+                                                element.roomId ==
+                                                tagcontroller.text,
+                                            orElse: () => RoomModel(
+                                                roomId: "", users: []))
+                                        .roomId ==
+                                    tagcontroller.text) {
+                                  rooms.add(tagcontroller.text);
+                                } else {
+                                  Get.snackbar("Error", "Room not found");
+                                }
                                 tagcontroller.text = '';
                               });
                             }),
@@ -168,9 +195,11 @@ class _AddUserState extends State<AddUser> {
                       ),
                     ),
 
-                    hintText: 'Add User',
+                    hintText: 'Add Room',
                   ),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {});
+                  },
                 ),
               ),
             ),
@@ -181,9 +210,17 @@ class _AddUserState extends State<AddUser> {
                 height: 45,
                 width: double.infinity,
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (formkey.currentState?.validate() == true) {
+                        uc.addUser(
+                            username: usernamecontroller.text,
+                            password: passwordcontroller.text,
+                            admin: true,
+                            rooms: rooms);
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 2, 83, 154),
+                      primary: const Color.fromARGB(255, 2, 83, 154),
                     ),
                     child: FittedBox(
                       fit: BoxFit.scaleDown,

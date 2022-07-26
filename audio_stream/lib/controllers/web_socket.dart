@@ -1,16 +1,17 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:typed_data';
+import 'package:audio_stream/controllers/user_controller.dart';
 import 'package:audio_stream/models/message.dart';
 import 'package:get/get.dart';
 import 'package:sound_stream/sound_stream.dart';
 import 'package:web_socket_channel/io.dart';
 
 class WebSocketController extends GetxController {
-  List<String> roomId = ['3', '2', '3'];
+  final uc = Get.find<UserController>();
   String id = '';
   late IOWebSocketChannel channel;
   WebSocketController() {
-    listen();
     player.initialize();
     player.status.listen((status) {
       isPlaying.value = status == SoundStreamStatus.Playing;
@@ -22,13 +23,15 @@ class WebSocketController extends GetxController {
     });
 
     recorder.audioStream.listen((data) {
-      channel.sink.add(jsonEncode(Message(roomId: '2', data: data).toJson()));
+      channel.sink.add(
+          jsonEncode(Message(roomId: uc.selectedRoom!, data: data).toJson()));
+      print(jsonEncode(Message(roomId: uc.selectedRoom!, data: data).toJson()));
     });
   }
 //42
   void listen() {
     channel = IOWebSocketChannel.connect(
-        'ws://vargapp-env.eba-is6gvbmw.us-east-1.elasticbeanstalk.com/websockets?${roomId.join('-,-')}',
+        'ws://vargapp-env.eba-is6gvbmw.us-east-1.elasticbeanstalk.com/websockets?${uc.user.value!.rooms.join('-,-')}',
         pingInterval: const Duration(seconds: 5));
     channel.stream.listen((message) {
       player.writeChunk(Uint8List.fromList(message.cast<int>().toList()));

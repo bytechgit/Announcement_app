@@ -1,10 +1,13 @@
 import 'package:audio_stream/editRoom.dart';
+import 'package:audio_stream/models/roomModel.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:get/get.dart';
+
+import 'controllers/user_controller.dart';
 
 class Room extends StatefulWidget {
-  final String text;
-  const Room({Key? key, required this.text}) : super(key: key);
+  final RoomModel room;
+  const Room({Key? key, required this.room}) : super(key: key);
 
   @override
   State<Room> createState() => RoomState();
@@ -13,10 +16,18 @@ class Room extends StatefulWidget {
 class RoomState extends State<Room> {
   @override
   Widget build(BuildContext context) {
+    final uc = Get.find<UserController>();
     return Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EditRoom(
+                          room: widget.room,
+                        )));
+          },
           child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -37,35 +48,16 @@ class RoomState extends State<Room> {
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const EditRoom()));
-                            },
-                            child: Text(
-                              widget.text,
-                              style: const TextStyle(
-                                  fontSize: 19, fontWeight: FontWeight.w500),
-                              textAlign: TextAlign.left,
-                            ),
+                          child: Text(
+                            widget.room.roomId,
+                            style: const TextStyle(
+                                fontSize: 19, fontWeight: FontWeight.w500),
+                            textAlign: TextAlign.left,
                           ),
                         ),
                       ),
                     ),
                     const Expanded(child: SizedBox()),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerRight,
-                      child: GestureDetector(
-                          onTap: () {},
-                          child: Icon(
-                            Icons.close,
-                            size: 30,
-                            color: Colors.grey[600],
-                          )),
-                    )
                   ],
                 ),
                 const Divider(

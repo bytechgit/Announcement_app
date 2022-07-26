@@ -1,5 +1,10 @@
+import 'package:audio_stream/models/userModel.dart';
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'controllers/user_controller.dart';
 
 class AddRoom extends StatefulWidget {
   const AddRoom({Key? key}) : super(key: key);
@@ -9,19 +14,13 @@ class AddRoom extends StatefulWidget {
 }
 
 class _AddRoomState extends State<AddRoom> {
+  GlobalKey<FormState> formkey = GlobalKey<FormState>();
   TextEditingController tagcontroller = TextEditingController();
-  final lista = [
-    'aaaaaa',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb',
-    'bbbbb'
-  ];
+  TextEditingController roomnamecontroller = TextEditingController();
+  List<String> users = [];
   @override
   Widget build(BuildContext context) {
+    final uc = Get.find<UserController>();
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -37,56 +36,61 @@ class _AddRoomState extends State<AddRoom> {
                         width: MediaQuery.of(context).size.width * 0.85),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 40, 0, 30),
-                  child: SizedBox(
-                      height: 50,
-                      child: TextField(
-                          decoration: InputDecoration(
-                        labelText: "Room name",
-                        floatingLabelStyle:
-                            TextStyle(color: Color.fromARGB(255, 2, 83, 154)),
-                        prefixIcon: Icon(Icons.edit),
-                        hintStyle: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                        labelStyle: TextStyle(fontSize: 17, color: Colors.grey),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 2, 83, 154)),
-                        ),
-                      ))),
-                ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Wrap(
-                    children: lista
-                        .map(
-                          (e) => Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Chip(
-                              backgroundColor: Color.fromARGB(255, 2, 83, 154),
-                              labelStyle: TextStyle(color: Colors.white),
-                              deleteIcon: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                                size: 20,
+                  padding: const EdgeInsets.fromLTRB(0, 40, 0, 10),
+                  child: SizedBox(
+                      height: 80,
+                      child: Form(
+                        key: formkey,
+                        child: TextFormField(
+                            validator:
+                                RequiredValidator(errorText: "Enter password"),
+                            controller: roomnamecontroller,
+                            decoration: const InputDecoration(
+                              labelText: "Room name",
+                              floatingLabelStyle: TextStyle(
+                                  color: Color.fromARGB(255, 2, 83, 154)),
+                              prefixIcon: Icon(Icons.edit),
+                              hintStyle: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                              labelStyle:
+                                  TextStyle(fontSize: 17, color: Colors.grey),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 2, 83, 154)),
                               ),
-                              onDeleted: () {
-                                setState(() {
-                                  lista.remove(e);
-                                });
-                              },
-                              label: Text(
-                                e,
-                              ),
+                            )),
+                      )),
+                ),
+                Wrap(
+                  children: users
+                      .map(
+                        (e) => Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Chip(
+                            backgroundColor:
+                                const Color.fromARGB(255, 2, 83, 154),
+                            labelStyle: const TextStyle(color: Colors.white),
+                            deleteIcon: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            onDeleted: () {
+                              setState(() {
+                                users.remove(e);
+                              });
+                            },
+                            label: Text(
+                              e,
                             ),
                           ),
-                        )
-                        .toList(),
-                  ),
+                        ),
+                      )
+                      .toList(),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 40),
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 40),
                   child: SizedBox(
                     width: double.infinity,
                     child: TextField(
@@ -104,7 +108,22 @@ class _AddRoomState extends State<AddRoom> {
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    lista.add(tagcontroller.text);
+                                    if (uc.users.value
+                                            .firstWhere(
+                                                (element) =>
+                                                    element.username ==
+                                                    tagcontroller.text,
+                                                orElse: () => UserModel(
+                                                    username: "",
+                                                    password: "",
+                                                    admin: false,
+                                                    rooms: []))
+                                            .username ==
+                                        tagcontroller.text) {
+                                      users.add(tagcontroller.text);
+                                    } else {
+                                      Get.snackbar("Error", "User not found");
+                                    }
                                     tagcontroller.text = '';
                                   });
                                 }),
@@ -136,9 +155,14 @@ class _AddRoomState extends State<AddRoom> {
                     height: 45,
                     width: double.infinity,
                     child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (formkey.currentState?.validate() == true) {
+                            uc.addRoom(
+                                roomId: roomnamecontroller.text, users: users);
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 2, 83, 154),
+                          primary: const Color.fromARGB(255, 2, 83, 154),
                         ),
                         child: FittedBox(
                           fit: BoxFit.scaleDown,

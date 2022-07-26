@@ -1,11 +1,12 @@
+import 'package:audio_stream/models/userModel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../editUser.dart';
 
 class User extends StatefulWidget {
-  final String text;
-  const User({Key? key, required this.text}) : super(key: key);
+  final UserModel user;
+  const User({Key? key, required this.user}) : super(key: key);
 
   @override
   State<User> createState() => _UserState();
@@ -17,7 +18,11 @@ class _UserState extends State<User> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const EditUser()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditUser(
+                      user: widget.user,
+                    )));
       },
       child: Container(
           decoration: const BoxDecoration(
@@ -54,7 +59,7 @@ class _UserState extends State<User> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                       child: Text(
-                        widget.text,
+                        widget.user.username,
                         style: GoogleFonts.ubuntu(
                             fontSize: 19, fontWeight: FontWeight.w500),
                         textAlign: TextAlign.left,

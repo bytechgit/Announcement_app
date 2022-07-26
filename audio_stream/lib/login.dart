@@ -117,9 +117,9 @@ class _LoginState extends State<Login> {
                                   [
                                     RequiredValidator(
                                         errorText: "Enter password"),
-                                    MinLengthValidator(6,
-                                        errorText:
-                                            "Password must have at least 8 characters"),
+                                    // MinLengthValidator(6,
+                                    //     errorText:
+                                    //         "Password must have at least 8 characters"),
                                   ],
                                 ),
                               ),
@@ -142,18 +142,18 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           onPressed: () async {
-                            uc.getRooms();
+                            FocusManager.instance.primaryFocus?.unfocus();
                             if (formkey.currentState?.validate() == true) {
                               final result = await uc.login(
                                   username: usernamecontroller.text,
                                   password: passwordcontroller.text);
-                              if (result) {
-                                // ignore: use_build_context_synchronously
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Homepage()),
-                                );
+                              if (result == 1) {
+                                wsc.listen();
+                                navBar.changeScreen(0);
+                              } else if (result == 2) {
+                                wsc.listen();
+                                wsc.play();
+                                navBar.changeScreen(4);
                               } else {
                                 Get.snackbar('Login', "Error",
                                     backgroundColor: Colors.white);
