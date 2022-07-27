@@ -1,5 +1,6 @@
 import 'package:audio_stream/models/userModel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -43,8 +44,10 @@ class _AddRoomState extends State<AddRoom> {
                       child: Form(
                         key: formkey,
                         child: TextFormField(
-                            validator:
-                                RequiredValidator(errorText: "Enter password"),
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp("[0-9a-zA-Z]|_|-")),
+                            ],
                             controller: roomnamecontroller,
                             decoration: const InputDecoration(
                               labelText: "Room name",
@@ -157,8 +160,9 @@ class _AddRoomState extends State<AddRoom> {
                     child: ElevatedButton(
                         onPressed: () async {
                           if (formkey.currentState?.validate() == true) {
+                            print("object");
                             final result = await uc.addRoom(
-                                roomId: roomnamecontroller.text, users: users);
+                                roomId: roomnamecontroller.text, users_: users);
                             if (result) {
                               setState(() {
                                 roomnamecontroller.text = "";

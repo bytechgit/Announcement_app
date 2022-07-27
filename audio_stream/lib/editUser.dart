@@ -130,6 +130,10 @@ class _EditUserState extends State<EditUser> {
                           onDeleted: () {
                             setState(() {
                               widget.user.rooms.remove(e);
+                              uc.removeUserFromRoom(
+                                  roomId: e,
+                                  username: widget.user.username,
+                                  user: false);
                             });
                           },
                           label: Text(
@@ -170,6 +174,10 @@ class _EditUserState extends State<EditUser> {
                                         .roomId ==
                                     tagcontroller.text) {
                                   widget.user.rooms.add(tagcontroller.text);
+                                  uc.addUserToRoom(
+                                      roomId: tagcontroller.text,
+                                      username: widget.user.username,
+                                      user: true);
                                 } else {
                                   Get.snackbar("Error", "Room not found");
                                 }

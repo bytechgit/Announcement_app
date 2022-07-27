@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:audio_stream/models/roomModel.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -213,17 +215,18 @@ class _AddUserState extends State<AddUser> {
                     onPressed: () async {
                       FocusManager.instance.primaryFocus?.unfocus();
                       if (formkey.currentState?.validate() == true) {
+                        inspect(rooms);
                         final result = await uc.addUser(
                             username: usernamecontroller.text,
                             password: passwordcontroller.text,
-                            admin: true,
-                            rooms: rooms);
+                            admin: admin,
+                            rooms1: rooms);
                         if (result) {
                           setState(() {
                             usernamecontroller.text = "";
                             passwordcontroller.text = "";
                             admin = false;
-                            rooms.clear();
+                            rooms = [];
                           });
                         }
                       }

@@ -13,15 +13,15 @@ class WebSocketController extends GetxController {
   String id = '';
   int num = 0;
   StreamSubscription<dynamic>? listeningStream;
-  List<int> lista = [];
+  List<Uint8List> lista = [];
   late IOWebSocketChannel channel;
   WebSocketController() {
-    player.initialize(sampleRate: 30000);
+    player.initialize(sampleRate: 19800);
     player.status.listen((status) {
       isPlaying.value = status == SoundStreamStatus.Playing;
     });
 
-    recorder.initialize(sampleRate: 30000);
+    recorder.initialize(sampleRate: 20000);
     recorder.status.listen((status) {
       isRecording.value = status == SoundStreamStatus.Playing;
     });
@@ -48,11 +48,13 @@ class WebSocketController extends GetxController {
       } else if (num < 10) {
         //channel.sink.add(jsonEncode(
         //    Message(roomId: uc.selectedRoom!, data: lista).toJson()));
-        lista.addAll(data);
+        lista.add(data);
         num++;
       } else {
-        channel.sink.add(
-            jsonEncode(Message(roomId: uc.selectedRoom!, data: data).toJson()));
+        //  print(jsonEncode(
+//Message(roomId: uc.selectedRoom!, data: [data]).toJson()));
+        channel.sink.add(jsonEncode(
+            Message(roomId: uc.selectedRoom!, data: [data]).toJson()));
       }
     });
   }

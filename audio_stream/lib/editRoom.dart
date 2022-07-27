@@ -16,6 +16,13 @@ class EditRoom extends StatefulWidget {
 
 class _EditRoomState extends State<EditRoom> {
   late TextEditingController tagcontroller = TextEditingController();
+  @override
+  void initState() {
+    widget.room.loadUsers().then((value) {
+      setState(() {});
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +85,8 @@ class _EditRoomState extends State<EditRoom> {
                                   widget.room.users.remove(e);
                                   uc.removeUserFromRoom(
                                       roomId: widget.room.roomId,
-                                      username: tagcontroller.text);
+                                      username: e,
+                                      user: true);
                                 });
                               },
                               label: Text(
@@ -123,7 +131,8 @@ class _EditRoomState extends State<EditRoom> {
                                       widget.room.users.add(tagcontroller.text);
                                       uc.addUserToRoom(
                                           roomId: widget.room.roomId,
-                                          username: tagcontroller.text);
+                                          username: tagcontroller.text,
+                                          user: false);
                                     } else {
                                       Get.snackbar("Error", "User not found");
                                     }

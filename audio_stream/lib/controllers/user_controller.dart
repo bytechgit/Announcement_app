@@ -55,11 +55,12 @@ class UserController extends GetxController {
       {required String username,
       required String password,
       required bool admin,
-      required List<String> rooms}) async {
+      required List<String> rooms1}) async {
     try {
       final user = UserModel(
-          username: username, password: password, admin: admin, rooms: rooms);
-      print("kjkk");
+          username: username, password: password, admin: admin, rooms: rooms1);
+      inspect(user);
+      print(user.toJson());
       final response = await http.post(
         Uri.parse('$serverAddress/addUser'),
         headers: <String, String>{
@@ -71,7 +72,13 @@ class UserController extends GetxController {
       );
       inspect(response);
       if (response.statusCode == 200) {
+        for (var r in rooms.value) {
+          if (rooms1.contains(r.roomId)) {
+            r.users.add(username);
+          }
+        }
         users.value.add(user);
+        inspect(users);
         users.refresh();
         Get.snackbar('Add user', "User added successfully");
         return true;
@@ -90,7 +97,9 @@ class UserController extends GetxController {
   ///add user to room
   ///
   Future<bool> addUserToRoom(
-      {required String roomId, required String username}) async {
+      {required String roomId,
+      required String username,
+      required bool user}) async {
     try {
       final response = await http.post(
         Uri.parse('$serverAddress/addUserToRoom'),
@@ -100,6 +109,17 @@ class UserController extends GetxController {
         body: jsonEncode({'roomId': roomId, "username": username}),
       );
       if (response.statusCode == 200) {
+        if (!user) {
+          users.value
+              .firstWhere((element) => element.username == username)
+              .rooms
+              .add(roomId);
+        } else {
+          rooms.value
+              .firstWhere((element) => element.roomId == roomId)
+              .users
+              .add(username);
+        }
         Get.snackbar('Update Room', "User added successfully");
         return true;
       } else {
@@ -113,7 +133,9 @@ class UserController extends GetxController {
   }
 
   Future<bool> removeUserFromRoom(
-      {required String roomId, required String username}) async {
+      {required String roomId,
+      required String username,
+      required bool user}) async {
     try {
       final response = await http.post(
         Uri.parse('$serverAddress/removeUserFromRoom'),
@@ -124,6 +146,16 @@ class UserController extends GetxController {
       );
       inspect(response);
       if (response.statusCode == 200) {
+        if (user) {
+          for (var u in users.value) {
+            u.rooms.remove(roomId);
+          }
+        } else {
+          for (var r in rooms.value) {
+            r.users.remove(username);
+          }
+        }
+
         Get.snackbar('Update Room', "User removed successfully");
         return true;
       } else {
@@ -141,18 +173,23 @@ class UserController extends GetxController {
   ///add room
   ///
   Future<bool> addRoom(
-      {required String roomId, required List<String> users}) async {
+      {required String roomId, required List<String> users_}) async {
     try {
       final response = await http.post(
         Uri.parse('$serverAddress/addRoom'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'roomId': roomId, 'users': users}),
+        body: jsonEncode({'roomId': roomId, 'users': users_}),
       );
       inspect(response);
       if (response.statusCode == 200) {
-        rooms.value.add(RoomModel(roomId: roomId, users: users));
+        for (var u in users.value) {
+          if (users_.contains(u.username)) {
+            u.rooms.add(roomId);
+          }
+        }
+        rooms.value.add(RoomModel(roomId: roomId, users: users_));
         rooms.refresh();
         Get.snackbar('Add Room', "Room added successfully");
         return true;
@@ -183,6 +220,9 @@ class UserController extends GetxController {
       );
       inspect(response);
       if (response.statusCode == 200) {
+        for (var u in users.value) {
+          u.rooms.remove(roomId);
+        }
         rooms.value.removeWhere((element) => element.roomId == roomId);
         rooms.refresh();
         Get.snackbar('Delete Room', "Room deleted successfully");
@@ -212,6 +252,9 @@ class UserController extends GetxController {
       );
       inspect(response);
       if (response.statusCode == 200) {
+        for (var r in rooms.value) {
+          r.users.remove(username);
+        }
         users.value.removeWhere((element) => element.username == username);
         users.refresh();
         Get.snackbar('Delete user', "User deleted successfully");
@@ -273,7 +316,7 @@ class UserController extends GetxController {
             .map((e) => RoomModel.fromJson(e))
             .toList();
 
-        inspect(rooms);
+        rooms.refresh();
         return "Loaded successfully";
       } else {
         return response.body.toString();
@@ -301,7 +344,7 @@ class UserController extends GetxController {
         users.value = (jsonDecode(response.body) as List)
             .map((e) => UserModel.fromJson(e))
             .toList();
-        inspect(users);
+        users.refresh();
         return "Loaded successfully";
       } else {
         return response.body.toString();
