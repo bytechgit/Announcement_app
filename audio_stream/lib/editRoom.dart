@@ -1,4 +1,5 @@
 import 'package:audio_stream/models/roomModel.dart';
+import 'package:audio_stream/models/userModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -75,6 +76,9 @@ class _EditRoomState extends State<EditRoom> {
                               onDeleted: () {
                                 setState(() {
                                   widget.room.users.remove(e);
+                                  uc.removeUserFromRoom(
+                                      roomId: widget.room.roomId,
+                                      username: tagcontroller.text);
                                 });
                               },
                               label: Text(
@@ -104,9 +108,22 @@ class _EditRoomState extends State<EditRoom> {
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    if (widget.room.users
-                                        .contains(tagcontroller.text)) {
+                                    if (uc.users.value
+                                            .firstWhere(
+                                                (element) =>
+                                                    element.username ==
+                                                    tagcontroller.text,
+                                                orElse: () => UserModel(
+                                                    username: "",
+                                                    password: "",
+                                                    admin: false,
+                                                    rooms: []))
+                                            .username ==
+                                        tagcontroller.text) {
                                       widget.room.users.add(tagcontroller.text);
+                                      uc.addUserToRoom(
+                                          roomId: widget.room.roomId,
+                                          username: tagcontroller.text);
                                     } else {
                                       Get.snackbar("Error", "User not found");
                                     }
@@ -136,43 +153,17 @@ class _EditRoomState extends State<EditRoom> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: SizedBox(
-                    height: 45,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          uc.updateRoom(room: widget.room);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: const Color.fromARGB(255, 2, 83, 154),
-                        ),
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            'Update room',
-                            style: GoogleFonts.openSans(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        )),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    'or',
-                    style: GoogleFonts.ubuntu(),
-                  ),
-                ),
-                Padding(
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                   child: SizedBox(
                     height: 45,
                     width: double.infinity,
                     child: ElevatedButton(
-                        onPressed: () {
-                          uc.deleteRoom(roomId: widget.room.roomId);
+                        onPressed: () async {
+                          final result =
+                              await uc.deleteRoom(roomId: widget.room.roomId);
+                          if (result) {
+                            Navigator.pop(context);
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           primary: const Color.fromARGB(255, 2, 83, 154),

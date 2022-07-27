@@ -210,13 +210,22 @@ class _AddUserState extends State<AddUser> {
                 height: 45,
                 width: double.infinity,
                 child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      FocusManager.instance.primaryFocus?.unfocus();
                       if (formkey.currentState?.validate() == true) {
-                        uc.addUser(
+                        final result = await uc.addUser(
                             username: usernamecontroller.text,
                             password: passwordcontroller.text,
                             admin: true,
                             rooms: rooms);
+                        if (result) {
+                          setState(() {
+                            usernamecontroller.text = "";
+                            passwordcontroller.text = "";
+                            admin = false;
+                            rooms.clear();
+                          });
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(

@@ -155,10 +155,16 @@ class _AddRoomState extends State<AddRoom> {
                     height: 45,
                     width: double.infinity,
                     child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (formkey.currentState?.validate() == true) {
-                            uc.addRoom(
+                            final result = await uc.addRoom(
                                 roomId: roomnamecontroller.text, users: users);
+                            if (result) {
+                              setState(() {
+                                roomnamecontroller.text = "";
+                                users.clear();
+                              });
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(

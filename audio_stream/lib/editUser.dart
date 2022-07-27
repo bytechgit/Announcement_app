@@ -1,3 +1,4 @@
+import 'package:audio_stream/controllers/navBarControler.dart';
 import 'package:audio_stream/models/userModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,6 +29,7 @@ class _EditUserState extends State<EditUser> {
   @override
   Widget build(BuildContext context) {
     final uc = Get.find<UserController>();
+    final navBar = Get.find<NavBarControler>();
     return SafeArea(
       child: Scaffold(
           body: SingleChildScrollView(
@@ -231,8 +233,12 @@ class _EditUserState extends State<EditUser> {
                 height: 45,
                 width: double.infinity,
                 child: ElevatedButton(
-                    onPressed: () {
-                      uc.deleteUser(username: widget.user.username);
+                    onPressed: () async {
+                      final result =
+                          await uc.deleteUser(username: widget.user.username);
+                      if (result) {
+                        Navigator.pop(context);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       primary: const Color.fromARGB(255, 2, 83, 154),

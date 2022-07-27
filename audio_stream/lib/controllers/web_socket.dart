@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
@@ -11,6 +12,7 @@ class WebSocketController extends GetxController {
   final uc = Get.find<UserController>();
   String id = '';
   int num = 0;
+  StreamSubscription<dynamic>? listeningStream;
   List<int> lista = [];
   late IOWebSocketChannel channel;
   WebSocketController() {
@@ -72,7 +74,7 @@ class WebSocketController extends GetxController {
     channel = IOWebSocketChannel.connect(
         'ws://vargapp-env.eba-is6gvbmw.us-east-1.elasticbeanstalk.com/websockets?${uc.user.value!.rooms.join('-,-')}',
         pingInterval: const Duration(seconds: 5));
-    channel.stream.listen((message) {
+    listeningStream = channel.stream.listen((message) {
       //(message as List).forEach((element) {
       player.writeChunk(Uint8List.fromList(message.cast<int>().toList()));
       // });

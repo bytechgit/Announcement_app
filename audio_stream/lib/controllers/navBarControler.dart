@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:audio_stream/addRoom.dart';
 import 'package:audio_stream/addUser.dart';
 import 'package:audio_stream/controllers/web_socket.dart';
@@ -38,6 +40,7 @@ class NavBarControler extends GetxController {
               onPressed: () {
                 Get.back();
                 wsc.recorder.stop();
+                wsc.listeningStream?.cancel();
                 wsc.uc.logout();
                 changeScreen(4);
               },

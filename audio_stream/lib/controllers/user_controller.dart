@@ -51,7 +51,7 @@ class UserController extends GetxController {
 
   ////add user
   ///
-  Future<String> addUser(
+  Future<bool> addUser(
       {required String username,
       required String password,
       required bool admin,
@@ -73,12 +73,15 @@ class UserController extends GetxController {
       if (response.statusCode == 200) {
         users.value.add(user);
         users.refresh();
-        return "User added successfully";
+        Get.snackbar('Add user', "User added successfully");
+        return true;
       } else {
-        return response.body.toString();
+        Get.snackbar('Add user', "Error");
+        return false;
       }
     } catch (e) {
-      return e.toString();
+      Get.snackbar('Add user', "Error");
+      return false;
     }
   }
 
@@ -86,21 +89,49 @@ class UserController extends GetxController {
   ///
   ///add user to room
   ///
-  Future<bool> updateRoom({required RoomModel room}) async {
+  Future<bool> addUserToRoom(
+      {required String roomId, required String username}) async {
     try {
       final response = await http.post(
-        Uri.parse('$serverAddress/updateRoom'),
+        Uri.parse('$serverAddress/addUserToRoom'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'room': room.toJson()}),
+        body: jsonEncode({'roomId': roomId, "username": username}),
       );
       if (response.statusCode == 200) {
+        Get.snackbar('Update Room', "User added successfully");
         return true;
       } else {
+        Get.snackbar('Update Room', "Error");
         return false;
       }
     } catch (e) {
+      Get.snackbar('Update Room', "Error");
+      return false;
+    }
+  }
+
+  Future<bool> removeUserFromRoom(
+      {required String roomId, required String username}) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$serverAddress/removeUserFromRoom'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'roomId': roomId, "username": username}),
+      );
+      inspect(response);
+      if (response.statusCode == 200) {
+        Get.snackbar('Update Room', "User removed successfully");
+        return true;
+      } else {
+        Get.snackbar('Update Room', "Error");
+        return false;
+      }
+    } catch (e) {
+      Get.snackbar('Update Room', "Error");
       return false;
     }
   }
@@ -109,7 +140,7 @@ class UserController extends GetxController {
   ///
   ///add room
   ///
-  Future<String> addRoom(
+  Future<bool> addRoom(
       {required String roomId, required List<String> users}) async {
     try {
       final response = await http.post(
@@ -123,14 +154,17 @@ class UserController extends GetxController {
       if (response.statusCode == 200) {
         rooms.value.add(RoomModel(roomId: roomId, users: users));
         rooms.refresh();
-        return "Room added successfully";
+        Get.snackbar('Add Room', "Room added successfully");
+        return true;
       } else if (response.statusCode == 398) {
-        return "Room already exist";
+        Get.snackbar('Add Room', "Room already exist");
+        return false;
       } else {
-        return response.body.toString();
+        Get.snackbar('Add Room', "Error");
+        return false;
       }
     } catch (e) {
-      return e.toString();
+      return false;
     }
   }
 
@@ -151,11 +185,14 @@ class UserController extends GetxController {
       if (response.statusCode == 200) {
         rooms.value.removeWhere((element) => element.roomId == roomId);
         rooms.refresh();
+        Get.snackbar('Delete Room', "Room deleted successfully");
         return true;
       } else {
+        Get.snackbar('Delete Room', "Error");
         return false;
       }
     } catch (e) {
+      Get.snackbar('Delete Room', "Error");
       return false;
     }
   }
@@ -177,11 +214,14 @@ class UserController extends GetxController {
       if (response.statusCode == 200) {
         users.value.removeWhere((element) => element.username == username);
         users.refresh();
+        Get.snackbar('Delete user', "User deleted successfully");
         return true;
       } else {
+        Get.snackbar('Delete user', "Error");
         return false;
       }
     } catch (e) {
+      Get.snackbar('Delete user', "Error");
       return false;
     }
   }
@@ -202,11 +242,14 @@ class UserController extends GetxController {
         body: jsonEncode({'user': u.toJson()}),
       );
       if (response.statusCode == 200) {
+        Get.snackbar('Update user', "User updated successfully");
         return "User updated successfully";
       } else {
+        Get.snackbar('Update user', "Error");
         return response.body.toString();
       }
     } catch (e) {
+      Get.snackbar('Update user', "Error");
       return e.toString();
     }
   }

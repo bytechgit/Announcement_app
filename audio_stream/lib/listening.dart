@@ -47,6 +47,8 @@ class Listening extends StatelessWidget {
               onTap: () {
                 uc.logout();
                 wsc.player.stop();
+                wsc.listeningStream?.cancel();
+
                 navBar.changeScreen(4);
               },
               child: Padding(
