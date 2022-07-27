@@ -153,7 +153,7 @@ class _LoginState extends State<Login> {
                               } else if (result == 2) {
                                 wsc.listen();
                                 wsc.play();
-                                navBar.changeScreen(4);
+                                navBar.changeScreen(5);
                               } else {
                                 Get.snackbar('Login', "Error",
                                     backgroundColor: Colors.white);

@@ -71,6 +71,12 @@ class _HomepageState extends State<Homepage> {
                           ),
                           label: '',
                         ),
+                        BottomNavigationBarItem(
+                          icon: Icon(
+                            Icons.logout,
+                          ),
+                          label: '',
+                        ),
                       ],
                     ),
                   )

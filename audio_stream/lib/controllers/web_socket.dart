@@ -10,31 +10,72 @@ import 'package:web_socket_channel/io.dart';
 class WebSocketController extends GetxController {
   final uc = Get.find<UserController>();
   String id = '';
+  int num = 0;
+  List<int> lista = [];
   late IOWebSocketChannel channel;
   WebSocketController() {
-    player.initialize();
+    player.initialize(sampleRate: 30000);
     player.status.listen((status) {
       isPlaying.value = status == SoundStreamStatus.Playing;
     });
 
-    recorder.initialize();
+    recorder.initialize(sampleRate: 30000);
     recorder.status.listen((status) {
       isRecording.value = status == SoundStreamStatus.Playing;
     });
 
     recorder.audioStream.listen((data) {
-      channel.sink.add(
-          jsonEncode(Message(roomId: uc.selectedRoom!, data: data).toJson()));
-      print(jsonEncode(Message(roomId: uc.selectedRoom!, data: data).toJson()));
+      /*   if (num != -1) {
+        lista.addAll(data);
+        num++;
+        if (num >= 10) {
+          channel.sink.add(jsonEncode(
+              Message(roomId: uc.selectedRoom!, data: lista).toJson()));
+          num = -1;
+          lista.clear();
+        }
+      } else {
+        channel.sink.add(
+            jsonEncode(Message(roomId: uc.selectedRoom!, data: data).toJson()));
+      }*/
+      //    lista.addAll(data);
+      if (num == 10) {
+        channel.sink.add(jsonEncode(
+            Message(roomId: uc.selectedRoom!, data: lista).toJson()));
+        num++;
+      } else if (num < 10) {
+        //channel.sink.add(jsonEncode(
+        //    Message(roomId: uc.selectedRoom!, data: lista).toJson()));
+        lista.addAll(data);
+        num++;
+      } else {
+        channel.sink.add(
+            jsonEncode(Message(roomId: uc.selectedRoom!, data: data).toJson()));
+      }
     });
   }
+
+  void startListening() {
+    recorder.start();
+  }
+
+  void stopListening() {
+    channel.sink.add(
+        jsonEncode(Message(roomId: uc.selectedRoom!, data: lista).toJson()));
+    recorder.stop();
+    lista.clear();
+    num = 0;
+  }
+
 //42
   void listen() {
     channel = IOWebSocketChannel.connect(
         'ws://vargapp-env.eba-is6gvbmw.us-east-1.elasticbeanstalk.com/websockets?${uc.user.value!.rooms.join('-,-')}',
         pingInterval: const Duration(seconds: 5));
     channel.stream.listen((message) {
+      //(message as List).forEach((element) {
       player.writeChunk(Uint8List.fromList(message.cast<int>().toList()));
+      // });
     }, onDone: (() async {
       print('reconnect ');
       await Future.delayed(const Duration(seconds: 1));

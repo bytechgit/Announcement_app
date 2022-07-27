@@ -269,6 +269,10 @@ class UserController extends GetxController {
     }
   }
 
+  void logout() {
+    prefs.clear();
+  }
+
   /////hive
   ///
   ///

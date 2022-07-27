@@ -13,7 +13,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 // Obtain shared preferences.
   final prefs = await SharedPreferences.getInstance();
-
   final uc = Get.put(UserController(prefs: prefs));
   final wsc = Get.put(WebSocketController());
   final navbar = Get.put(NavBarControler());

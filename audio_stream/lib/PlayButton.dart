@@ -46,31 +46,32 @@ class _PlayButtonState extends State<PlayButton> with TickerProviderStateMixin {
           ..addListener(() => setState(_updateRotation))
           ..repeat();
 
-    _scaleController =
-        AnimationController(vsync: this, duration: _kToggleDuration)
-          ..addListener(() => setState(_updateScale));
+    // _scaleController =
+    //     AnimationController(vsync: this, duration: _kToggleDuration)
+    //       ..addListener(() => setState(_updateScale));
 
     super.initState();
   }
 
   void _onToggle() {
     if (uc.selectedRoom != null) {
-      setState(() => isPlaying = !isPlaying);
+      // setState(() => isPlaying = !isPlaying);
 
-      if (_scaleController.isCompleted) {
-        _scaleController.reverse();
-      } else {
-        _scaleController.forward();
-      }
+      // if (_scaleController.isCompleted) {
+      //   _scaleController.reverse();
+      // } else {
+      //   _scaleController.forward();
+      // }
 
       ///
-      if (isPlaying && uc.selectedRoom != null) {
-        wsc.recorder.start();
+      if (!wsc.isRecording.value) {
+        wsc.startListening();
       } else {
-        wsc.recorder.stop();
+        wsc.stopListening();
       }
     } else {
-      Get.snackbar("Room not selected", "Please select room");
+      Get.snackbar("Room not selected", "Please select room",
+          duration: Duration(seconds: 1));
     }
   }
 
@@ -78,7 +79,7 @@ class _PlayButtonState extends State<PlayButton> with TickerProviderStateMixin {
     return SizedBox.expand(
       key: ValueKey<bool>(isPlaying),
       child: IconButton(
-        icon: isPlaying ? widget.pauseIcon : widget.playIcon,
+        icon: wsc.isRecording.value ? widget.pauseIcon : widget.playIcon,
         onPressed: _onToggle,
       ),
     );
@@ -88,35 +89,37 @@ class _PlayButtonState extends State<PlayButton> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          if (_showWaves) ...[
-            Blob(
-                color: const Color(0xff0092ff),
-                scale: _scale,
-                rotation: _rotation),
-            Blob(
-                color: const Color(0xff4ac7b7),
-                scale: _scale,
-                rotation: _rotation * 2 - 30),
-            Blob(
-                color: const Color(0xffa4a6f6),
-                scale: _scale,
-                rotation: _rotation * 3 - 45),
+      child: Obx(
+        () => Stack(
+          alignment: Alignment.center,
+          children: [
+            if (wsc.isRecording.value) ...[
+              Blob(
+                  color: const Color(0xff0092ff),
+                  scale: 1.02,
+                  rotation: _rotation),
+              Blob(
+                  color: const Color(0xff4ac7b7),
+                  scale: 1.02,
+                  rotation: _rotation * 2 - 30),
+              Blob(
+                  color: const Color(0xffa4a6f6),
+                  scale: 1.02,
+                  rotation: _rotation * 3 - 45),
+            ],
+            Container(
+              constraints: const BoxConstraints.expand(),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: AnimatedSwitcher(
+                duration: _kToggleDuration,
+                child: _buildIcon(isPlaying),
+              ),
+            ),
           ],
-          Container(
-            constraints: const BoxConstraints.expand(),
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-            ),
-            child: AnimatedSwitcher(
-              duration: _kToggleDuration,
-              child: _buildIcon(isPlaying),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
