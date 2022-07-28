@@ -45,6 +45,7 @@ class WebSocketController extends GetxController {
         channel.sink.add(jsonEncode(
             Message(roomId: uc.selectedRoom!, data: lista).toJson()));
         num++;
+        lista.clear();
       } else if (num < 10) {
         //channel.sink.add(jsonEncode(
         //    Message(roomId: uc.selectedRoom!, data: lista).toJson()));
@@ -64,8 +65,10 @@ class WebSocketController extends GetxController {
   }
 
   void stopListening() {
-    channel.sink.add(
-        jsonEncode(Message(roomId: uc.selectedRoom!, data: lista).toJson()));
+    if (lista.isNotEmpty) {
+      channel.sink.add(
+          jsonEncode(Message(roomId: uc.selectedRoom!, data: lista).toJson()));
+    }
     recorder.stop();
     lista.clear();
     num = 0;
