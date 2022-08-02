@@ -19,12 +19,18 @@ class RoomState extends State<Room> {
     final uc = Get.find<UserController>();
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => EditRoom(
-                      room: widget.room,
-                    )));
+        Get.to(
+            EditRoom(
+              room: widget.room,
+            ),
+            transition: Transition.downToUp,
+            duration: Duration(milliseconds: 500));
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => EditRoom(
+        //               room: widget.room,
+        //             )));
       },
       child: Container(
           decoration: const BoxDecoration(

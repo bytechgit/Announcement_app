@@ -245,7 +245,8 @@ class _EditUserState extends State<EditUser> {
                       final result =
                           await uc.deleteUser(username: widget.user.username);
                       if (result) {
-                        Navigator.pop(context);
+                        //  Navigator.pop(context);
+                        Get.back();
                       }
                     },
                     style: ElevatedButton.styleFrom(

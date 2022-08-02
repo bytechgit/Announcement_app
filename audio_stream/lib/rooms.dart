@@ -61,8 +61,11 @@ class _RoomsState extends State<Rooms> {
         floatingActionButton: FloatingActionButton(
           heroTag: "btn1",
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const AddRoom()));
+            Get.to(AddRoom(),
+                transition: Transition.downToUp,
+                duration: Duration(milliseconds: 500));
+            // Navigator.push(context,
+            //     MaterialPageRoute(builder: (context) => const AddRoom()));
           },
           backgroundColor: const Color.fromARGB(255, 2, 83, 154),
           child: const Icon(

@@ -58,8 +58,11 @@ class _UsersState extends State<Users> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const AddUser()));
+            Get.to(AddUser(),
+                transition: Transition.downToUp,
+                duration: Duration(milliseconds: 500));
+            // Navigator.push(context,
+            //     MaterialPageRoute(builder: (context) => const AddUser()));
           },
           backgroundColor: const Color.fromARGB(255, 2, 83, 154),
           child: const Icon(

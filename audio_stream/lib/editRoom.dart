@@ -171,7 +171,8 @@ class _EditRoomState extends State<EditRoom> {
                           final result =
                               await uc.deleteRoom(roomId: widget.room.roomId);
                           if (result) {
-                            Navigator.pop(context);
+                            Get.back();
+                            // Navigator.pop(context);
                           }
                         },
                         style: ElevatedButton.styleFrom(

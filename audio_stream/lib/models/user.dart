@@ -1,5 +1,6 @@
 import 'package:audio_stream/models/userModel.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../editUser.dart';
@@ -17,12 +18,18 @@ class _UserState extends State<User> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => EditUser(
-                      user: widget.user,
-                    )));
+        Get.to(
+            EditUser(
+              user: widget.user,
+            ),
+            transition: Transition.downToUp,
+            duration: Duration(milliseconds: 500));
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => EditUser(
+        //               user: widget.user,
+        //             )));
       },
       child: Container(
           decoration: const BoxDecoration(
